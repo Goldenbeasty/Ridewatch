@@ -40,10 +40,12 @@ and add the following line to it
 **Note that you should edit the path after `cd` to match where you copied the project** 
 
 ```bash
-*/5 10-21 * * * cd ~/Documents/Code/myproj && ./venv/bin/python main.py
+*/5 10-21 * * * cd ~/Documents/Code/myproj && ./venv/bin/python daemon.py
 ```
 
 The program stores the times at `~/.local/share/ridewatch/ridelogs` for future statistics
+
+The program outputs a beautified output in `~/.local/share/ridewatch/first.md` in markdown format for ease of display
 
 ## Licence
 

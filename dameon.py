@@ -5,6 +5,7 @@ import shutil
 import time
 
 import webops
+import mdit
 
 cachepath = "./cache"
 configpath = "./config.ini"
@@ -65,6 +66,8 @@ def main():
     datapoint["data_output_version"] = DATA_OUTPUT_VERSION
     json.dump(datapoint, open(os.path.join(storagepath, "ridelogs", str(datapoint["timestamp"]) + ".json"), "w"))
     json.dump(datapoint, open(os.path.join(storagepath, "latest.json"), "w"))
+    if len(datapoint["avalable_times"]) != 0:
+        mdit.mdit(datapoint["avalable_times"], os.path.join(storagepath, "first.md"))
 
 
 if __name__ == "__main__":
