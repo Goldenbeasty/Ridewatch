@@ -67,7 +67,7 @@ def main():
     json.dump(datapoint, open(os.path.join(storagepath, "ridelogs", str(datapoint["timestamp"]) + ".json"), "w"))
     json.dump(datapoint, open(os.path.join(storagepath, "latest.json"), "w"))
     if len(datapoint["avalable_times"]) != 0:
-        mdit.mdit(datapoint["avalable_times"], os.path.join(storagepath, "first.md"))
+        mdit.mdit(datapoint, os.path.join(storagepath, "first.md"))
 
 
 if __name__ == "__main__":

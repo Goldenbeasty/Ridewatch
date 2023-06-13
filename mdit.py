@@ -1,5 +1,6 @@
 import webops
 import time
+import os
 
 ### Protodef
 # first non auto time
@@ -29,12 +30,11 @@ def mdit(data:dict, path: str) -> None: # it is function callers job to make sur
         instructordb[unit["instructor"]].append(unit)
 
     consecutivetimesdb = []
-    # 
     for instructor, times in instructordb.items():
         if len(times) < 2:
             continue
         lasttime = times[0]["time"]
-        for i in range(1, len(times) - 1):
+        for i in range(1, len(times)):
             if times[i]["time"] <= lasttime + (4000):
                 consecutivetimesdb.append([times[i - 1], times[i]])
 
