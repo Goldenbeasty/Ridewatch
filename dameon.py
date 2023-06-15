@@ -55,6 +55,13 @@ def check_paths_to_use(): # what the fuck is this function
 def main():
     #check_paths_to_use()
     config = import_configparser()
+    if config["metainfo"]["enable_discord_integration"]:
+        ENABLE_DISCORD = True
+        import discord
+    else:
+        ENABLE_DISCORD = False
+
+
     resp = webops.get_API_data(config, config["metainfo"]["apikey"], int(config["metainfo"]["category"]), int(config["metainfo"]["city"]), int(config["metainfo"]["type"]))
     if resp == None: # no connectivity (prolly)
         exit(f"404 (prolly at {int(time.time())})")
@@ -68,6 +75,8 @@ def main():
         if isnew:
             newdata.append(timecheck)
     dbmanagement.update_is_taken_flag(appenddata)
+    if ENABLE_DISCORD:
+        discord.send_alert_new_times(newdata, config=config)
     #json.dump(appenddata, open("debugdump.json", "w"))
     #datapoint = {"timestamp" : int(time.time())}
     #datapoint["avalable_times"] = rows
