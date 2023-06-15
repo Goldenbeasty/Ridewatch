@@ -5,11 +5,12 @@ import shutil
 import time
 
 import webops
+import dbmanagement
 import mdit
 
 cachepath = "./cache"
 configpath = "./config.ini"
-storagepath = "~/.local/share/ridewatch/"
+storagepath = ".cache/storage/"
 
 DATA_OUTPUT_VERSION = 1
 
@@ -32,42 +33,49 @@ def import_configparser():
     config = configparser.ConfigParser()
     config.read(configpath)
 
-    if os.path.exists("./example-config.ini"): # this part checks for a newer version of the config file
-        secparser = configparser.ConfigParser()
-        secparser.read("./example-config.ini")
-        if secparser["meta"]["name"] == config["meta"]["name"]: # since filename config.ini is not unique to this project, error check for the tag would be nice
-            if int(secparser["meta"]["version"]) > int(config["meta"]["version"]):
-                print("The example config file is on a newer version than current, manually upgrading is recomended")
-                ### NOTE an auto update config file might be included in future versions of the codebase, currently as there are no outdated configs, such functionality is not needed.
-                if int(secparser["meta"]["breaks"] >= config["meta"]["version"]):
-                    print("WARNING: extremely unstable behavior detected, currently using a config with breaking changes")
-                    r = input("Do you want to continue [y/N]")
-                    if r.lower() != "y":
-                        exit("Exiting quietly")
+    ### This part is not required, since there will not be user input TODO make future config possible
+    #if os.path.exists("./example-config.ini"): # this part checks for a newer version of the config file
+    #    secparser = configparser.ConfigParser()
+    #    secparser.read("./example-config.ini")
+    #    if secparser["meta"]["name"] == config["meta"]["name"]: # since filename config.ini is not unique to this project, error check for the tag would be nice
+    #        if int(secparser["meta"]["version"]) > int(config["meta"]["version"]):
+    #            print("The example config file is on a newer version than current, manually upgrading is recomended")
+    #            ### NOTE an auto update config file might be included in future versions of the codebase, currently as there are no outdated configs, such functionality is not needed.
+    #            if int(secparser["meta"]["breaks"] >= config["meta"]["version"]):
+    #                print("WARNING: extremely unstable behavior detected, currently using a config with breaking changes")
+    #                r = input("Do you want to continue [y/N]")
+    #                if r.lower() != "y":
+    #                    exit("Exiting quietly")
     return config
 
-def check_paths_to_use():
+def check_paths_to_use(): # what the fuck is this function
     if not os.path.exists(storagepath):
         os.makedirs(storagepath)
 
 def main():
-    check_paths_to_use()
+    #check_paths_to_use()
     config = import_configparser()
     resp = webops.get_API_data(config, config["metainfo"]["apikey"], int(config["metainfo"]["category"]), int(config["metainfo"]["city"]), int(config["metainfo"]["type"]))
-    if resp == None:
-        with open(os.path.join(storagepath, "latest.json"), "w") as f:
-            f.write('{"status": 404}')
-            exit(404)
+    if resp == None: # no connectivity (prolly)
+        exit(f"404 (prolly at {int(time.time())})")
     header, rows = resp
     for index, row in enumerate(rows):
         rows[index] = webops.translate_web_list_to_dict(row)
-    datapoint = {"timestamp" : int(time.time())}
-    datapoint["avalable_times"] = rows
-    datapoint["data_output_version"] = DATA_OUTPUT_VERSION
-    json.dump(datapoint, open(os.path.join(storagepath, "ridelogs", str(datapoint["timestamp"]) + ".json"), "w"))
-    json.dump(datapoint, open(os.path.join(storagepath, "latest.json"), "w"))
-    if len(datapoint["avalable_times"]) != 0:
-        mdit.mdit(datapoint, os.path.join(storagepath, "first.md"))
+    appenddata = rows
+    newdata = []
+    for timecheck in appenddata:
+        isnew = dbmanagement.check_and_store_registration_time(timecheck)
+        if isnew:
+            newdata.append(timecheck)
+    dbmanagement.update_is_taken_flag(appenddata)
+    #json.dump(appenddata, open("debugdump.json", "w"))
+    #datapoint = {"timestamp" : int(time.time())}
+    #datapoint["avalable_times"] = rows
+    #datapoint["data_output_version"] = DATA_OUTPUT_VERSION
+    #json.dump(datapoint, open(os.path.join(storagepath, "ridelogs", str(datapoint["timestamp"]) + ".json"), "w"))
+    #json.dump(datapoint, open(os.path.join(storagepath, "latest.json"), "w"))
+    #if len(datapoint["avalable_times"]) != 0:
+    #    mdit.mdit(datapoint, os.path.join(storagepath, "first.md"))
 
 
 if __name__ == "__main__":
