@@ -69,7 +69,12 @@ def main():
         else:
             ENABLE_DISCORD = False
         if ENABLE_DISCORD:
-            discord.send_alert_new_times(newdata, config=config)
+            sendbuffer = []
+            for unit in newdata:
+                if "Automatic" not in unit["ridetype"]:
+                    sendbuffer.append(unit)
+            if len(sendbuffer) != 0:
+                discord.send_alert_new_times(sendbuffer, config=config)
         mdit.mdit(appenddata, "/app/.cache/latest.md")
 
 
