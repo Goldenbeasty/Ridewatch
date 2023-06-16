@@ -1,7 +1,7 @@
 FROM python:3-slim
 
 # Install cron
-RUN apt-get update && apt-get install -y cron
+RUN apt update -y && apt-get install -y cron
 
 # Set the working directory in the container
 WORKDIR /app
@@ -10,18 +10,15 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Create and activate the virtual environment
-RUN python -m venv venv
-ENV PATH="/app/venv/bin:$PATH"
+RUN python -m venv /venv
+ENV PATH="/venv/bin:$PATH"
 
 # Upgrade pip and install dependencies
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code into the container
-COPY . .
-
 # Add a cron job to execute the script every hour
-RUN echo "0 * * * * root /app/venv/bin/python /app/dameon.py >> /var/log/cron.log 2>&1" >> /etc/cron.d/mycron
+RUN echo "*/5 8-22 * * * /venv/bin/python /app/dameon.py >> /var/log/cron.log 2>&1" >> /etc/cron.d/mycron
 RUN chmod 0644 /etc/cron.d/mycron
 RUN crontab /etc/cron.d/mycron
 RUN touch /var/log/cron.log

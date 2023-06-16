@@ -8,20 +8,18 @@ import webops
 import dbmanagement
 import mdit
 
-cachepath = "./cache"
-configpath = "./config.ini"
-storagepath = ".cache/storage/"
+configpath = "/app/config.ini"
 
 DATA_OUTPUT_VERSION = 1
 
-cachepath = os.path.abspath(os.path.expanduser(cachepath))
-configpath = os.path.abspath(os.path.expanduser(configpath))
-storagepath = os.path.abspath(os.path.expanduser(storagepath))
+configpath = os.path.abspath(configpath)
 
 
 def import_configparser():
     # check if the config.ini file exists
     if not os.path.exists(configpath):
+        print(configpath)
+        print(os.listdir())
         print("No config found")
         if not os.path.exists("./example-config.ini"):
             print("example config file not found, unable to configure")
@@ -48,20 +46,9 @@ def import_configparser():
     #                    exit("Exiting quietly")
     return config
 
-def check_paths_to_use(): # what the fuck is this function
-    if not os.path.exists(storagepath):
-        os.makedirs(storagepath)
-
 def main():
     #check_paths_to_use()
     config = import_configparser()
-    if config["metainfo"]["enable_discord_integration"]:
-        ENABLE_DISCORD = True
-        import discord
-    else:
-        ENABLE_DISCORD = False
-
-
     resp = webops.get_API_data(config, config["metainfo"]["apikey"], int(config["metainfo"]["category"]), int(config["metainfo"]["city"]), int(config["metainfo"]["type"]))
     if resp == None: # no connectivity (prolly)
         exit(f"404 (prolly at {int(time.time())})")
@@ -75,9 +62,14 @@ def main():
         if isnew:
             newdata.append(timecheck)
     dbmanagement.update_is_taken_flag(appenddata)
-    if ENABLE_DISCORD:
-        discord.send_alert_new_times(newdata, config=config)
-    #json.dump(appenddata, open("debugdump.json", "w"))
+    if len(newdata) != 0:
+        if config["metainfo"]["enable_discord_integration"]:
+            ENABLE_DISCORD = True
+            import discord
+        else:
+            ENABLE_DISCORD = False
+        if ENABLE_DISCORD:
+            discord.send_alert_new_times(newdata, config=config)
     #datapoint = {"timestamp" : int(time.time())}
     #datapoint["avalable_times"] = rows
     #datapoint["data_output_version"] = DATA_OUTPUT_VERSION
