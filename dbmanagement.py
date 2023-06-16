@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+import time
 
 # Establish a connection to the MongoDB server
 client = MongoClient('mongodb://mongodb:27017')
@@ -26,6 +27,7 @@ def check_and_store_registration_time(registration_time: dict) -> bool:
         else:
             return False
 
+    registration_time['time_first_seen'] = int(time.time())
     # Entry doesn't exist, insert it into the database
     collection.insert_one(registration_time)
     return True

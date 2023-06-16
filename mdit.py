@@ -12,7 +12,7 @@ import os
 def mdit(data:dict, path: str) -> None: # it is function callers job to make sure the data variable has at least one valid time
     datalist = []
     limittime = int(time.time()) + (3600 * 24 * 7)
-    for unit in data["avalable_times"]:
+    for unit in data:
         if "Automatic" in unit["ridetype"]:
             continue
         if unit["time"] > limittime:

@@ -70,13 +70,7 @@ def main():
             ENABLE_DISCORD = False
         if ENABLE_DISCORD:
             discord.send_alert_new_times(newdata, config=config)
-    #datapoint = {"timestamp" : int(time.time())}
-    #datapoint["avalable_times"] = rows
-    #datapoint["data_output_version"] = DATA_OUTPUT_VERSION
-    #json.dump(datapoint, open(os.path.join(storagepath, "ridelogs", str(datapoint["timestamp"]) + ".json"), "w"))
-    #json.dump(datapoint, open(os.path.join(storagepath, "latest.json"), "w"))
-    #if len(datapoint["avalable_times"]) != 0:
-    #    mdit.mdit(datapoint, os.path.join(storagepath, "first.md"))
+        mdit.mdit(appenddata, "/app/.cache/latest.md")
 
 
 if __name__ == "__main__":
