@@ -4,51 +4,35 @@ This program is made to automatically scrape the e-autokool backend for free tim
 
 ## Setup
 
-Setup a virtual enviroment
+You will need `docker` and `git`
 
-In the project directory run
-
-```bash
-python3 -m venv venv
-```
-
-Activate the virtual enviroment
+Clone the repo
 
 ```bash
-. ./venv/bin/activate
+git clone https://github.com/goldenbeasty/ridewatch
 ```
 
-install the nessesary project requirements
+Start the containers
 
 ```bash
-pip install -r requirements.txt
+docker compose up -d
 ```
+The program outputs a beautified output in `./.cache/latest.md` in markdown format if you wish to display it on a desktop widget for example
 
+## Copyright
 
-### Cronjob
+Copyright (C) 2023  Goldenbeasty
 
-On a linux system you can set up a cronjob to automatically run the script every 5 minutes 10:00-21:00 every day
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-You can edit your crontab by running
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-```bash
-crontab -e
-```
-
-and add the following line to it
-
-**Note that you should edit the path after `cd` to match where you copied the project** 
-
-```bash
-*/5 10-21 * * * cd ~/Documents/Code/myproj && ./venv/bin/python daemon.py
-```
-
-The program stores the times at `~/.local/share/ridewatch/ridelogs` for future statistics
-
-The program outputs a beautified output in `~/.local/share/ridewatch/first.md` in markdown format for ease of display
-
-## Licence
-
-This codebase is licenced under the GNU GPL v3 Licence
-
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
