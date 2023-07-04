@@ -17,8 +17,8 @@ ENV PATH="/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Add a cron job to execute the script every hour
-RUN echo "*/5 8-22 * * * /venv/bin/python /app/dameon.py >> /var/log/cron.log 2>&1" >> /etc/cron.d/mycron
+# Add a cron job to execute the script every hour ### NOTE time in the container is in UTC
+RUN echo "*/5 5-20 * * * /venv/bin/python /app/dameon.py >> /var/log/cron.log 2>&1" >> /etc/cron.d/mycron
 RUN chmod 0644 /etc/cron.d/mycron
 RUN crontab /etc/cron.d/mycron
 RUN touch /var/log/cron.log

@@ -4,11 +4,11 @@ import configparser
 from typing import List
 
 DISCORD_MESSAGE_LENGTH_LIMIT = 2000
-TIME_OFFSET = -1 * (3 * 3600)
+
 def send_alert_new_times(times: List[dict], config: configparser.ConfigParser) -> None:
     message = 'New times dropped:\n' ### TODO add location
     for newtime in times:
-        newline = f"""<t:{newtime["time"] + TIME_OFFSET}:f> with {newtime["instructor"]}\n"""
+        newline = f"""<t:{newtime["time"]}:f> with {newtime["instructor"]}\n"""
         if len(message) + len(newline) > DISCORD_MESSAGE_LENGTH_LIMIT: # message length overflow protection
             send_discord_message(message, config)
             message = ""

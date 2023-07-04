@@ -3,6 +3,10 @@ from bs4 import BeautifulSoup
 import configparser
 import datetime
 from typing import List, Union, Tuple
+from zoneinfo import ZoneInfo
+
+TIMEZONE = "Europe/Tallinn"
+TIMEZONE = ZoneInfo(TIMEZONE)
 
 ### mappings between the table from the api and local storage
 webrowmapping = {}
@@ -59,19 +63,32 @@ def get_API_data(config: configparser.ConfigParser, apikey:str, cat: int, city: 
 
     return headers, rows
 
-def to_unix_timestamp(time_string: str) -> int:
-    time_format = "%d.%m.%Y %H:%M"
-    datetime_obj = datetime.datetime.strptime(time_string, time_format)
+def to_unix_timestamp(date_string: str, timezone:ZoneInfo = TIMEZONE) -> int:
+    date_format = "%d.%m.%Y %H:%M"
+    # Parse the input string into a datetime object
+    dt = datetime.datetime.strptime(date_string, date_format)
 
-    timestamp = int(datetime_obj.timestamp())
-    return timestamp
+    # Set the specified timezone
+    dt = dt.replace(tzinfo=timezone)
 
-def to_human_readable(timestamp: int) -> str:
-    time_format = "%d.%m.%Y %H:%M"
-    datetime_obj = datetime.datetime.fromtimestamp(timestamp)
+    # Convert the datetime object to a Unix timestamp
+    unix_timestamp = dt.timestamp()
 
-    time_string = datetime_obj.strftime(time_format)
-    return time_string
+    # Return the Unix timestamp as an integer
+    return int(unix_timestamp)
+
+def to_human_readable(timestamp: int, timezone: ZoneInfo = TIMEZONE) -> str:
+    # Convert the Unix timestamp to a datetime object
+    dt = datetime.datetime.fromtimestamp(timestamp, tz=timezone)
+
+    # Define the format for the output string
+    date_format = "%d.%m.%Y %H:%M"
+
+    # Format the datetime object as a string
+    date_string = dt.strftime(date_format)
+
+    # Return the formatted date string
+    return date_string
 
 def translate_web_list_to_dict(row: list[str]) -> dict:
     responseform = {}
