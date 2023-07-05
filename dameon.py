@@ -31,19 +31,6 @@ def import_configparser():
     config = configparser.ConfigParser()
     config.read(configpath)
 
-    ### This part is not required, since there will not be user input TODO make future config possible
-    #if os.path.exists("./example-config.ini"): # this part checks for a newer version of the config file
-    #    secparser = configparser.ConfigParser()
-    #    secparser.read("./example-config.ini")
-    #    if secparser["meta"]["name"] == config["meta"]["name"]: # since filename config.ini is not unique to this project, error check for the tag would be nice
-    #        if int(secparser["meta"]["version"]) > int(config["meta"]["version"]):
-    #            print("The example config file is on a newer version than current, manually upgrading is recomended")
-    #            ### NOTE an auto update config file might be included in future versions of the codebase, currently as there are no outdated configs, such functionality is not needed.
-    #            if int(secparser["meta"]["breaks"] >= config["meta"]["version"]):
-    #                print("WARNING: extremely unstable behavior detected, currently using a config with breaking changes")
-    #                r = input("Do you want to continue [y/N]")
-    #                if r.lower() != "y":
-    #                    exit("Exiting quietly")
     return config
 
 def main():
@@ -53,6 +40,8 @@ def main():
     if resp == None: # no connectivity (prolly)
         exit(f"404 (prolly at {int(time.time())})")
     header, rows = resp
+
+    # Translate list of values to dict
     for index, row in enumerate(rows):
         rows[index] = webops.translate_web_list_to_dict(row)
     appenddata = rows
