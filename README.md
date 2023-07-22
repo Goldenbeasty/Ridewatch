@@ -12,12 +12,35 @@ Clone the repo
 git clone https://github.com/goldenbeasty/ridewatch
 ```
 
+Copy and configure the `example-config.ini` to `config.ini`
+
 Start the containers
 
 ```bash
 docker compose up -d
 ```
 The program outputs a beautified output in `./.cache/latest.md` in markdown format if you wish to display it on a desktop widget for example
+
+## Configuration wildcards
+
+| Value    | cat    | city    | type    |
+|---------------- | --------------- | --------------- | --------------- |
+| 0   | wildcard    | wildcard    | invalid    |
+| 1   | A   | Tallinn   | Square, Urban   |
+| 2   | A   | Tartu   | Slippery ride   |
+| 3   | B   | Pärnu   | Square, Urban   |
+| 4   | -   | Rakvere   | ECO    |
+| 5   | -   | -    | Simulator    |
+| 6   | C   | Jõhvi    | -    |
+| 7   | -   | -    | -    |
+| 8   | -   | -    | -    |
+| 9   |    | Jõgeva    | -    |
+| 10   |    | -    |     |
+| 11   |    | -    |     |
+| 12   |    | -    |     |
+| 13   |    | -    |     |
+| 14   |    | -    |     |
+
 
 ## Copyright
 

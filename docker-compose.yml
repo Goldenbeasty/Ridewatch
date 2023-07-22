@@ -15,7 +15,8 @@ services:
       dockerfile: Dockerfile
     restart: always
     volumes:
-      - .:/app
+      - ./config.ini:/app/config.ini
+      - ./.cache:/app/.cache
     depends_on:
       - mongodb
 
