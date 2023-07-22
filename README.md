@@ -2,6 +2,10 @@
 
 This program is made to automatically scrape the e-autokool backend for free times
 
+If you are interested in this project/using this projct I can develop it further and I currently have it working on a Discord server, so I could make the server public as well! Don't be afraid to contact me.
+
+Also if you know how to work with discord.py v2 or any other discord bot library you could help me out on that front.
+
 ## Setup
 
 You will need `docker` and `git`
